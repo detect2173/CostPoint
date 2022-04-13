@@ -34,8 +34,19 @@ def setvars():
 
 root = Tk()
 root.title('Account#/Project#/Notes')
-root.geometry('550x300')
-root.wm_maxsize(width=550, height=300)
+root.resizable(False, False)  # This code helps to disable windows from resizing
+
+window_width = 550
+window_height = 300
+# get the screen size of your computer [width and height using the root object as follows]
+screen_width = root.winfo_screenwidth()
+screen_height = root.winfo_screenheight()
+# Get the window position from the top dynamically as well as position from left or right as follows
+position_top = int(screen_height/2 -window_height/2)
+position_right = int(screen_width / 2 - window_width/2)
+# this is the line that will center your window
+root.geometry(f'{window_width}x{window_height}+{position_right}+{position_top}')
+#root.eval('tk::PlaceWindow %s center')
 root.iconbitmap('cp.ico')
 proj_lbl = Label(text='Project Number:')
 proj_lbl.pack()
@@ -79,7 +90,7 @@ a = Service(executable_path=r"C:\chromedriver_win32\chromedriver.exe")
 
 driver = webdriver.Chrome(options=options, service=a)
 # driver.maximize_window()
-root.quit()
+
 driver.get("https://cp.etrky.com/cpweb/cploginform.htm")
 fName = driver.find_element(By.NAME, "USER")
 fName.send_keys("JBERRY")
