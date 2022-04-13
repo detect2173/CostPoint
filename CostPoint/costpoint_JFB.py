@@ -11,6 +11,8 @@ from selenium.webdriver.common.by import By
 global user_acct
 global user_proj
 global user_notes
+global user_name
+global user_pwd
 options = Options()
 options.add_argument('start-maximized')
 options.add_argument('disable-infobars')
@@ -26,19 +28,23 @@ def setvars():
     global user_acct
     global user_proj
     global user_notes
+    global user_name
+    global user_pwd
     user_acct = acct_entry.get()
     user_proj = proj_entry.get()
     user_notes = notes_entry.get(index1=1.0, index2="end-1c")
+    user_name = username_entry.get()
+    user_pwd = pwd_entry.get()
+
 
 
 
 root = Tk()
 root.title('Account#/Project#/Notes')
 root.resizable(False, False)  # This code helps to disable windows from resizing
-
-window_width = 550
+window_width = 425
 window_height = 300
-# get the screen size of your computer [width and height using the root object as follows]
+#get the screen size of your computer [width and height using the root object as follows]
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
 # Get the window position from the top dynamically as well as position from left or right as follows
@@ -47,34 +53,42 @@ position_right = int(screen_width / 2 - window_width/2)
 # this is the line that will center your window
 root.geometry(f'{window_width}x{window_height}+{position_right}+{position_top}')
 #root.eval('tk::PlaceWindow %s center')
-root.iconbitmap('cp.ico')
+#root.iconbitmap('cp.ico')
+username_lbl = Label(text='Username:')
+username_lbl.grid(column=0,row=0, pady=(5,0), padx=(10,10))
+username = StringVar(root, value='JBERRY')
+username_entry = Entry(root, textvariable=username)
+username_entry.grid(column=0, row=1)
+pwd_lbl = Label(text='Password:')
+pwd_lbl.grid(column=1, row=0, pady=(5,0), padx=(10,10))
+passw = StringVar(root, value='jb7535')
+pwd_entry = Entry(root, textvariable=passw, show="*")
+# acct_entry.grid(row=0, column=1, pady=5)
+pwd_entry.grid(column=1, row=1)
 proj_lbl = Label(text='Project Number:')
-proj_lbl.pack()
+proj_lbl.grid(column=0,row=2, pady=(5,0), padx=(10,10))
 project = StringVar(root, value='7003.01.006.05')
 proj_entry = Entry(root, textvariable=project)
-# proj_entry.grid(row=0, column=0, pady=5)
-proj_entry.pack(pady=5)
+proj_entry.grid(column=0, row=3)
 acct_lbl = Label(text='Account Number:')
-acct_lbl.pack()
+acct_lbl.grid(column=1, row=2, pady=(5,0), padx=(10,10))
 account = StringVar(root, value='610-201-30')
 acct_entry = Entry(root, textvariable=account)
 # acct_entry.grid(row=0, column=1, pady=5)
-acct_entry.pack(pady=5)
+acct_entry.grid(column=1, row=3)
 notes_lbl = Label(text='Notes:')
-notes_lbl.pack(pady=15)
+notes_lbl.grid(column=0, row=4, pady=(10,0))
 notes = 'SHRO incentive program restocking for prize vault/attire'
 notes_entry = Text(root, width=50, height=6, wrap='word')
 notes_entry.insert(END, notes)
-
-notes_entry.pack(pady=5)
+notes_entry.grid(column=0, row=5, columnspan=2, padx=(10,10))
+set_var = Button(root, text='Submit',command=lambda: [setvars(), quit_win()])
+set_var.grid(column=0, row=6, pady=15, padx=10, columnspan=2)
 
 
 def quit_win():
     root.destroy()
 
-
-set_var = Button(root, text='Submit',command=lambda: [setvars(), quit_win()])
-set_var.pack(pady=10, padx=20)
 
 root.mainloop()
 
@@ -90,12 +104,12 @@ a = Service(executable_path=r"C:\chromedriver_win32\chromedriver.exe")
 
 driver = webdriver.Chrome(options=options, service=a)
 # driver.maximize_window()
-
+root.quit()
 driver.get("https://cp.etrky.com/cpweb/cploginform.htm")
 fName = driver.find_element(By.NAME, "USER")
-fName.send_keys("JBERRY")
+fName.send_keys(user_name)
 lName = driver.find_element(By.NAME, "CLIENT_PASSWORD")
-lName.send_keys("jb7535")
+lName.send_keys(user_pwd)
 email_address = driver.find_element(By.NAME, "DATABASE")
 email_address.send_keys("DELTEKCP")
 button = driver.find_element(By.NAME, "Login")
@@ -142,7 +156,7 @@ accounting.click()
 time.sleep(2)
 project = driver.find_element(By.ID, 'PROJ_ID')
 project.send_keys(user_proj)
-time.sleep(2)
+time.sleep(3)
 account = driver.find_element(By.ID, 'ACCT_ID')
 account.send_keys(user_acct)
 time.sleep(2)
